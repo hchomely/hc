@@ -12,9 +12,9 @@ export default class auto_grade1chapter4 extends uiBaseEX{
     @property(Button)
     btnBack: Button = null; 
     @property(Button)
-    btnMenu: Button = null; 
+    btnGameWZQ: Button = null; 
     @property(Button)
-    btnFresh: Button = null; 
+    btnGameHRD: Button = null; 
     @property(Button)
     btnEditor: Button = null; 
     @property(Label)

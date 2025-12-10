@@ -5,18 +5,19 @@
 const { ccclass, property } = _decorator;
 import util from "../controller/util";
 import uiBaseEX from "./uiBaseEX";
-import { Button,Node, Label,Sprite,Toggle, _decorator,EditBox } from 'cc';
+import { Button,Node, Label,Sprite,Toggle, _decorator,EditBox, WebView } from 'cc';
 import auto_grade1chapter4 from "./auto_ui/auto_grade1chapter4";
 
 @ccclass("grade1chapter4")
 export default class grade1chapter4 extends auto_grade1chapter4{
 
+    @property(WebView)
+    web:WebView=null;
     createInit(){//ui打开第一次的时候运行，用于绑定各种事件，btn，tg ，edt等事件 
 
         util.bindClickEventFX(this.btnBack.node, this.btnBack_Click.bind(this));
-        util.bindClickEventFX(this.btnMenu.node, this.btnMenu_Click.bind(this));
-        util.bindClickEventFX(this.btnFresh.node, this.btnFresh_Click.bind(this));
-        util.bindClickEventFX(this.btnEditor.node, this.btnEditor_Click.bind(this));
+        util.bindClickEventFX(this.btnGameWZQ.node, this.btnGameWZQ_Click.bind(this));
+        util.bindClickEventFX(this.btnGameHRD.node, this.btnGameHRD_Click.bind(this));
 
     }
     init(){//每次打开都会执行，初始化函数
@@ -43,15 +44,15 @@ export default class grade1chapter4 extends auto_grade1chapter4{
     btnBack_Click(){
 
     }
-    btnMenu_Click(){
-
+    btnGameWZQ_Click(){
+        if (this.web){
+            this.web.url = "http://119.45.185.223:89/index.html";
+        }
     }
-    btnFresh_Click(){
-
+    btnGameHRD_Click(){
+        if (this.web){
+            this.web.url = "http://119.45.185.223:89/web/index.html";
+        }
     }
-    btnEditor_Click(){
-
-    }
-
 
 }

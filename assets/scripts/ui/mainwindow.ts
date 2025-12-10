@@ -26,12 +26,12 @@ export default class mainwindow extends auto_mainwindow {
             uiController.getInstance().show("grade1chapter4");
         });
         
-        // // 添加数字华容道游戏按钮
-        // if (this.btnPuzzle) {
-        //     util.bindClickEventFX(this.btnPuzzle.node, () => {
-        //         uiController.getInstance().show("puzzleMain");
-        //     });
-        // }
+        // 添加数字华容道游戏按钮
+        if (this.btnChapter5) {
+            util.bindClickEventFX(this.btnChapter5.node, () => {
+                uiController.getInstance().show("grade1chapter5");
+            });
+        }
 
     }
     init() {//每次打开都会执行，初始化函数
