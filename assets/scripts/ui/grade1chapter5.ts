@@ -36,7 +36,7 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
     }
     data;
     step: number = 0; // 当前步骤
-    showTips:boolean=false;
+    showTips: boolean = false;
     refreshUI() {//刷新函数，页面某些数据需要刷新的时候使用
         if (this.showTips) {
             this.slTips.string = this.data.tips;
@@ -45,63 +45,25 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
             this.slTips.string = "点击提示查看知识点";
         }
         this.slTipsToEditor.string = this.data.question;
-        this.customStep1.active = this.step == 2;
-        this.slResult.node.active = this.step == 2;
+        this.customStep1.active = this.step >= 2;
+        this.slResult.node.active = this.step == 3;
         this.slResult.string = this.data.answer;
+        let animTime = 0.2;
+        let animDelay = 0.1;
+        let animPoxX = -20;
         if (this.step == 2) {
-            let animTime = 0.2;
-            let animDelay = 0.1;
-            let animPoxX = -20;
             this.customStep1.destroyAllChildren();
             let type = this.data.type;
             let tmpPosX = 0;
+            let tmpPosy = 0;
             let width = this.widgetPlayer.node.getComponent(UITransform).width;
             let leftNumb = this.data.num;
             if (type == 2 || type == 3) {
                 leftNumb = leftNumb - 1;
             }
-            for (let i = 0; i < leftNumb; i++) {
-                let child = widgetPlayer.CreateNew(widgetPlayer, this.widgetPlayer.node, this.customStep1);
-                let childPosX = tmpPosX;
-                tmpPosX = tmpPosX + width;
-                child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
-                child.node.setScale(new Vec3(0, 0, 0));
-                child.setUIData({
-                    isme: false,
-                    leftNum: 1 + i,
-                    type: type
-                });
-                let index = i + 1;
-                tween(child.node)
-                    .delay(index * animDelay)
-                    .to(animTime, { scale: new Vec3(1, 1, 1) })
-                    .to(animTime, { position: new Vec3(childPosX, 0, 0) })
-                    .start();
+            else if (type == 4 || type == 5) {
+                leftNumb = leftNumb - 1;
             }
-
-            let me = widgetPlayer.CreateNew(widgetPlayer, this.widgetPlayer.node, this.customStep1);
-            let space = this.data.num;
-            if (type == 2 || type == 3) {
-                space = space - 1;
-            }
-            let mePosX = tmpPosX;
-            tmpPosX = tmpPosX + width;
-            me.node.setScale(new Vec3(0, 0, 0));
-            me.node.setPosition(new Vec3(mePosX, animPoxX, 0));
-            me.setUIData({
-                isme: true,
-                leftNum: this.data.num,
-                rightNum: this.data.num1,
-                num: 0,
-                playerName: this.data.playerName,
-                type: type
-            });
-            //做一个从下到上的动画
-            tween(me.node)
-                .to(animTime, { scale: new Vec3(1, 1, 1) })
-                .to(animTime, { position: new Vec3(mePosX, 0, 0) })
-                .start();
-
             let rightNum = this.data.num1;
             if (type == 2) {
                 rightNum = rightNum - 1;
@@ -109,52 +71,170 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
             else if (type == 3) {
                 rightNum = this.data.num1 - this.data.num - 1;
             }
-            for (let i = 0; i < rightNum; i++) {
-                let child = widgetPlayer.CreateNew(widgetPlayer, this.widgetPlayer.node, this.customStep1);
-                let childPosX = tmpPosX;
-                tmpPosX = tmpPosX + width;
-                child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
-                let tmpNum = 1 + i;
-                if (type == 2) {
-                    tmpNum = rightNum - i;
-                }
-                else if (type == 3) {
-                    tmpNum = this.data.num + i + 1;
-                }
-                child.setUIData({
-                    isme: false,
-                    rightNum: tmpNum,
-                    type: type
-                });
-                let index = i;
-                child.node.setScale(new Vec3(0, 0, 0));
-                tween(child.node)
-                    .delay((this.data.num + 1 + index) * animDelay)
-                    .to(animTime, { scale: new Vec3(1, 1, 1) })
-                    .to(animTime, { position: new Vec3(childPosX, 0, 0) })
-                    .start();
+            else if (type == 4) {
+                rightNum = this.data.num1 - this.data.num + 1;
             }
-            if (type == 3) {
-                //在后面再加一个人
-                let child = widgetPlayer.CreateNew(widgetPlayer, this.widgetPlayer.node, this.customStep1);
-                let childPosX = tmpPosX;
-                tmpPosX = tmpPosX + width;
-                child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
-                child.setUIData({
+            else if (type == 5) {
+                rightNum = this.data.num1;
+            }
+            this.slResult.node.getComponent(UIOpacity).opacity = 0;
+            if (type == 1 || type == 2 || type == 3) {
+                for (let i = 0; i < leftNumb; i++) {
+                    let child = widgetPlayer.CreateNew(widgetPlayer, this.widgetPlayer.node, this.customStep1);
+                    if (tmpPosX > 900) {
+                        tmpPosX = 0;
+                        tmpPosy = -100;
+                    }
+                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width; 
+                    child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
+                    child.node.setScale(new Vec3(0, 0, 0));
+                    child.setUIData({
+                        isme: false,
+                        leftNum: 1 + i,
+                        type: type
+                    });
+                    let index = i + 1;
+                    this.doTween(child.node, animTime, childPosX, tmpPosy, index * animDelay);
+                }
+
+                let me = widgetPlayer.CreateNew(widgetPlayer, this.widgetPlayer.node, this.customStep1);
+                let space = this.data.num;
+                if (type == 2 || type == 3) {
+                    space = space - 1;
+                }
+                if (tmpPosX > 900) {
+                    tmpPosX = 0;
+                    tmpPosy = -100;
+                }
+                let mePosX = tmpPosX; tmpPosX = tmpPosX + width;
+                me.node.setPosition(new Vec3(mePosX, animPoxX, 0));
+                me.setUIData({
                     isme: true,
-                    playerName: this.data.player2Name,
-                    
+                    leftNum: this.data.num,
                     rightNum: this.data.num1,
+                    num: 0,
+                    playerName: this.data.playerName,
                     type: type
                 });
-                child.node.setScale(new Vec3(0, 0, 0));
-                tween(child.node)
-                    .to(animTime, { scale: new Vec3(1, 1, 1) })
-                    .to(animTime, { position: new Vec3(childPosX, 0, 0) })
-                    .start();
+                this.doTween(me.node, animTime, mePosX, tmpPosy, 0);
+
+                for (let i = 0; i < rightNum; i++) {
+                    let child = widgetPlayer.CreateNew(widgetPlayer, this.widgetPlayer.node, this.customStep1);
+                    if (tmpPosX > 900) {
+                        tmpPosX = 0;
+                        tmpPosy = -100;
+                    }
+                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width; 
+                    child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
+                    let tmpNum = 1 + i;
+                    if (type == 2) {
+                        tmpNum = rightNum - i;
+                    }
+                    else if (type == 3) {
+                        tmpNum = this.data.num + i + 1;
+                    }
+                    child.setUIData({
+                        isme: false,
+                        rightNum: tmpNum,
+                        type: type
+                    });
+                    let index = i;
+                    this.doTween(child.node, animTime, childPosX, tmpPosy, (this.data.num + 1 + index) * animDelay);
+                }
+                if (type == 3) {
+                    //在后面再加一个人
+                    let child = widgetPlayer.CreateNew(widgetPlayer, this.widgetPlayer.node, this.customStep1);
+                    if (tmpPosX > 900) {
+                        tmpPosX = 0;
+                        tmpPosy = -100;
+                    }
+                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width; 
+                    child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
+                    child.setUIData({
+                        isme: true,
+                        playerName: this.data.player2Name,
+
+                        rightNum: this.data.num1,
+                        type: type
+                    });
+                    this.doTween(child.node, animTime, childPosX, tmpPosy, 0);
+                }
             }
+            else if (type == 4 || type == 5) {
+                for (let i = 0; i < leftNumb; i++) {
+                    let child = widgetPlayer.CreateNew(widgetPlayer, this.widgetPlayer.node, this.customStep1);
+                    if (tmpPosX > 900) {
+                        tmpPosX = 0;
+                        tmpPosy = -100;
+                    }
+                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width; 
+                    child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
+                    child.node.setScale(new Vec3(0, 0, 0));
+                    child.setUIData({
+                        isme: false,
+                        leftNum: 1 + i,
+                        type: type
+                    });
+                    let index = i + 1;
+                    this.doTween(child.node, animTime, childPosX, tmpPosy, index * animDelay);
+                }
+                for (let i = 0; i < rightNum; i++) {
+                    let child = widgetPlayer.CreateNew(widgetPlayer, this.widgetPlayer.node, this.customStep1);
+                    if (tmpPosX > 900) {
+                        tmpPosX = 0;
+                        tmpPosy = -100;
+                    }
+                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width; 
+                    child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
+                    let tmpNum = this.data.num + i;
+                    child.setUIData({
+                        isme: true,
+                        rightNum: tmpNum,
+                        type: type
+                    });
+                    let index = i;
+                    this.doTween(child.node, animTime, childPosX, tmpPosy, (this.data.num + 1 + index) * animDelay);
+                }
+                {
+                    if (type == 5) {
+                        let child = widgetPlayer.CreateNew(widgetPlayer, this.widgetPlayer.node, this.customStep1);
+                        if (tmpPosX > 900) {
+                            tmpPosX = 0;
+                            tmpPosy = -100;
+                        }
+                        let childPosX = tmpPosX; tmpPosX = tmpPosX + width; 
+                        child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
+                        child.node.setScale(new Vec3(0, 0, 0));
+                        let index = this.data.num1 + this.data.num;
+                        child.setUIData({
+                            isme: false,
+                            leftNum: index,
+                            type: type
+                        });
+                        this.doTween(child.node, animTime, childPosX, tmpPosy, index * animDelay);
+                    }
+                }
+            }
+
+
+        }
+        if (this.step == 2) {
+            // 做一个从下到上的动画
+            this.slResult.node.getComponent(UIOpacity).opacity = 0;
+            tween(this.slResult.node.getComponent(UIOpacity))
+                .to(animTime, { opacity: 255 })
+                .start();
         }
     }
+    doTween(child, animTime, childPosX, childPosY, animDelay) {
+        child.setScale(new Vec3(0, 0, 0));
+        tween(child)
+            .delay(animDelay)
+            .to(animTime, { scale: new Vec3(1, 1, 1) })
+            .to(animTime, { position: new Vec3(childPosX, childPosY, 0) })
+            .start();
+    }
+  
     endRefreshMessage(rMsg) {//接收分发数据
         super.endRefreshMessage(rMsg);
         if (rMsg.code == 0) {
@@ -180,22 +260,28 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
     }
     btnNextStep_Click() {
         this.step++;
-        if (this.step > 2) {
+        if (this.step > 3) {
             this.step = 1;
         }
         this.refreshUI();
     }
 
+    questioIndex = 0;
     getQuestionData() {
         //随机生成一个排队问题
         // 问题1是：小明前面有3个人，后面有2人，一共有几人？
         // 问题2是：小明从前面数是第2，从后面数是第4，一共多少人？
         // 问题3是：同学们排队做操，小明排第三，小花排第9，他们之间有几人？
-        let type = Math.floor(Math.random() * 3) + 1;
+        //随机生成一个读书问题
+        // 问题4是：小花读一本故事书，今天从第5页开始读，读到第10页，明天开始读第11页，今天一共读了多少页？
+        // 问题5是：小花读一本故事书，今天从第5页开始读，读了10页，明天开始从第几页读？
+        // let type = Math.floor(Math.random() * 4) + 1;
+        let type = this.questioIndex % 5 + 1;
+        this.questioIndex++;
+        let num = Math.floor(Math.random() * 9) + 1;
+        let num1 = Math.floor(Math.random() * 9) + 1;
         if (type == 1) {
             //前有几后有几的问题jiren
-            let num = Math.floor(Math.random() * 9) + 1;
-            let num1 = Math.floor(Math.random() * 9) + 1;
             let question = "小明前面有" + num + "人，后面有" + num1 + "人，一共有几人？";
             //保存这两个数字
             return {
@@ -212,9 +298,6 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
             }
         }
         else if (type == 2) {
-
-            let num = Math.floor(Math.random() * 9) + 1;
-            let num1 = Math.floor(Math.random() * 9) + 1;
             let question = "小明从前面数是第" + num + "，从后面数是第" + num1 + "，一共多少人？";
             //保存这两个数字
             return {
@@ -231,9 +314,6 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
             }
         }
         else if (type == 3) {
-
-            let num = Math.floor(Math.random() * 9) + 1;
-            let num1 = Math.floor(Math.random() * 9) + 1;
             //确保num1大于num
             // //两个数不能相等
             if (num1 == num) {
@@ -260,7 +340,48 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
                 player2Name: "小花",
             }
         }
-
+        else if (type == 4) {
+            //确保num1大于num
+            // //两个数不能相等
+            if (num1 == num) {
+                num1 = num + 2;
+            }
+            if (num1 < num) {
+                let temp = num;
+                num = num1;
+                num1 = temp;
+            }
+            let question = "小花读一本故事书，今天从第" + num + "页开始读，读到第" + num1 + "页，明天开始读第" + (num1 + 1) + "页，今天一共读了多少页？";
+            //保存这两个数字
+            return {
+                num: num,
+                num1: num1,
+                tips: "读书一共读几页，两数相减再加一 几-几+1",
+                //题目
+                question: question,
+                //4 表示小花读一本故事书，今天从第几页开始读，读到第几页，明天开始读第几页，今天一共读了多少页？
+                type: 4,
+                //答案
+                answer: `列式：${num1}-${num}+1=${num1 - num + 1} （页）`,
+                playerName: "",
+            }
+        }
+        else if (type == 5) {
+            let question = "小花读一本故事书，今天从第" + num + "页开始读，读了" + num1 + "页，明天开始从第几页读？";
+            //保存这两个数字
+            return {
+                num: num,
+                num1: num1,
+                tips: "明天该读第几页，两数相加就可以",
+                //题目
+                question: question,
+                //5 表示小花读一本故事书，今天从第几页开始读，读了几页，明天开始从第几页读？
+                type: 5,
+                //答案
+                answer: `列式：${num}+${num1}=${num + num1} （页）`,
+                playerName: "",
+            }
+        }
     }
 }
 

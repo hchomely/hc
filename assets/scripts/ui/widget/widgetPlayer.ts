@@ -74,6 +74,23 @@ export default class widgetPlayer extends widgetBase {
                 this.slLeft.string = params.rightNum.toString();
             }
         }
+        else if (params.type == 4 || params.type == 5) {
+            if (params.isme) {
+                this.img_me.node.active = true;
+                this.img_other.node.active = false;
+                this.slMeName.string = "";
+            }
+            else {
+                this.img_me.node.active = false;
+                this.img_other.node.active = true;
+            }
+            if (params.leftNum) {
+                this.slLeft.string = params.leftNum.toString();
+            }
+            else {
+                this.slLeft.string = params.rightNum.toString();
+            }
+        }
     }
     @property(Sprite)
     img_other: Sprite = null;
