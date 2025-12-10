@@ -85,7 +85,7 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
                         tmpPosX = 0;
                         tmpPosy = -100;
                     }
-                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width; 
+                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width;
                     child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
                     child.node.setScale(new Vec3(0, 0, 0));
                     child.setUIData({
@@ -124,7 +124,7 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
                         tmpPosX = 0;
                         tmpPosy = -100;
                     }
-                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width; 
+                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width;
                     child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
                     let tmpNum = 1 + i;
                     if (type == 2) {
@@ -148,7 +148,7 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
                         tmpPosX = 0;
                         tmpPosy = -100;
                     }
-                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width; 
+                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width;
                     child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
                     child.setUIData({
                         isme: true,
@@ -167,7 +167,7 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
                         tmpPosX = 0;
                         tmpPosy = -100;
                     }
-                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width; 
+                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width;
                     child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
                     child.node.setScale(new Vec3(0, 0, 0));
                     child.setUIData({
@@ -184,7 +184,7 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
                         tmpPosX = 0;
                         tmpPosy = -100;
                     }
-                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width; 
+                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width;
                     child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
                     let tmpNum = this.data.num + i;
                     child.setUIData({
@@ -202,7 +202,7 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
                             tmpPosX = 0;
                             tmpPosy = -100;
                         }
-                        let childPosX = tmpPosX; tmpPosX = tmpPosX + width; 
+                        let childPosX = tmpPosX; tmpPosX = tmpPosX + width;
                         child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
                         child.node.setScale(new Vec3(0, 0, 0));
                         let index = this.data.num1 + this.data.num;
@@ -215,8 +215,63 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
                     }
                 }
             }
-
-
+            else if (type == 6) {
+                for (let i = 0; i < leftNumb; i++) {
+                    let child = widgetPlayer.CreateNew(widgetPlayer, this.widgetPlayer.node, this.customStep1);
+                    if (tmpPosX > 900) {
+                        tmpPosX = 0;
+                        tmpPosy = -100;
+                    }
+                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width;
+                    child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
+                    child.node.setScale(new Vec3(0, 0, 0));
+                    child.setUIData({
+                        isme: i == leftNumb - 1,
+                        leftNum: this.week[1 + i],
+                        type: type
+                    });
+                    let index = i + 1;
+                    this.doTween(child.node, animTime, childPosX, tmpPosy, index * animDelay);
+                }
+                for (let i = 0; i < rightNum; i++) {
+                    let child = widgetPlayer.CreateNew(widgetPlayer, this.widgetPlayer.node, this.customStep1);
+                    if (tmpPosX > 900) {
+                        tmpPosX = 0;
+                        tmpPosy = -100;
+                    }
+                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width;
+                    child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
+                    let tmpNum = this.data.num + i + 1;
+                    child.setUIData({
+                        isme: false,
+                        leftNum: this.week[tmpNum],
+                        rightNum: i + 1,
+                        type: type
+                    });
+                    let index = i;
+                    this.doTween(child.node, animTime, childPosX, tmpPosy, (this.data.num + 1 + index) * animDelay);
+                }
+            }
+            else if (type == 7) {
+                for (let i = 0; i < leftNumb; i++) {
+                    let child = widgetPlayer.CreateNew(widgetPlayer, this.widgetPlayer.node, this.customStep1);
+                    if (tmpPosX > 900) {
+                        tmpPosX = 0;
+                        tmpPosy = -100;
+                    }
+                    let childPosX = tmpPosX; tmpPosX = tmpPosX + width;
+                    child.node.setPosition(new Vec3(childPosX, animPoxX, 0));
+                    child.node.setScale(new Vec3(0, 0, 0));
+                    child.setUIData({
+                        isme: i == leftNumb - 1,
+                        leftNum: this.week[1 + i],
+                        type: type,
+                        rightNum: leftNumb-i-1>0 && leftNumb-i-1<=rightNum?leftNumb-i-1:null,
+                    });
+                    let index = i + 1;
+                    this.doTween(child.node, animTime, childPosX, tmpPosy, index * animDelay);
+                }
+            }
         }
         if (this.step == 2) {
             // 做一个从下到上的动画
@@ -234,7 +289,7 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
             .to(animTime, { position: new Vec3(childPosX, childPosY, 0) })
             .start();
     }
-  
+
     endRefreshMessage(rMsg) {//接收分发数据
         super.endRefreshMessage(rMsg);
         if (rMsg.code == 0) {
@@ -275,8 +330,11 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
         //随机生成一个读书问题
         // 问题4是：小花读一本故事书，今天从第5页开始读，读到第10页，明天开始读第11页，今天一共读了多少页？
         // 问题5是：小花读一本故事书，今天从第5页开始读，读了10页，明天开始从第几页读？
+        //随机生成一个推迟问题
+        // 问题6是：学校计划在星期二开运动会，因为天气原因推迟3天，运动会在星期几开？
+        // 问题7是：学校计划在星期五开运动会，因为天气原因提前3天，运动会在星期几开？
         // let type = Math.floor(Math.random() * 4) + 1;
-        let type = this.questioIndex % 5 + 1;
+        let type = this.questioIndex % 7 + 1;
         this.questioIndex++;
         let num = Math.floor(Math.random() * 9) + 1;
         let num1 = Math.floor(Math.random() * 9) + 1;
@@ -367,12 +425,13 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
             }
         }
         else if (type == 5) {
+
             let question = "小花读一本故事书，今天从第" + num + "页开始读，读了" + num1 + "页，明天开始从第几页读？";
             //保存这两个数字
             return {
                 num: num,
                 num1: num1,
-                tips: "明天该读第几页，两数相加就可以",
+                tips: "明天该读第几页，两数相加就可以 几+几",
                 //题目
                 question: question,
                 //5 表示小花读一本故事书，今天从第几页开始读，读了几页，明天开始从第几页读？
@@ -382,7 +441,46 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
                 playerName: "",
             }
         }
+        else if (type == 6) {
+            num = Math.floor(Math.random() * 2) + 1;
+            num1 = Math.floor(Math.random() * 3) + 1;
+            //数字1-7转换星期 中文的
+            let question = "学校计划在星期" + this.week[num] + "开运动会，因为天气原因推迟" + num1 + "天，运动会在星期几开？";
+            //保存这两个数字
+            return {
+                num: num,
+                num1: num1,
+                tips: "求推迟真容易，推迟几天就加几  几+几",
+                //题目
+                question: question,
+                //6 表示学校计划在星期二开运动会，因为天气原因推迟3天，运动会在星期几开？
+                type: 6,
+                //答案
+                answer: `列式：${num}+${num1}=${num + num1}`,
+                playerName: "",
+            }
+        }
+        else if (type == 7) {
+            num = Math.floor(Math.random() * 2) + 5;
+            num1 = Math.floor(Math.random() * 3) + 1;
+            //数字1-7转换星期 中文的
+            let question = "学校计划在星期" + this.week[num] + "开运动会，因为天气原因提前" + num1 + "天，运动会在星期几开？";
+            //保存这两个数字
+            return {
+                num: num,
+                num1: num1,
+                tips: "提前问题更简单，提前几天就减几  几-几",
+                //题目
+                question: question,
+                //7 表示学校计划在星期五开运动会，因为天气原因提前3天，运动会在星期几开？
+                type: 7,
+                //答案
+                answer: `列式：${num}-${num1}=${num - num1}`,
+                playerName: "",
+            }
+        }
     }
+    week = ["", "一", "二", "三", "四", "五", "六", "日"];
 }
 
 

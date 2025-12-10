@@ -46,7 +46,7 @@ export default class grade1chapter4 extends auto_grade1chapter4{
     }
     btnGameWZQ_Click(){
         if (this.web){
-            this.web.url = "http://119.45.185.223:89/index.html";
+            this.web.url = "http://119.45.185.223:89/web/index1.html";
         }
     }
     btnGameHRD_Click(){

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>手机五子棋</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        header {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #00dbde, #fc00ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .info-box {
+            flex: 1;
+            padding: 0 10px;
+        }
+        
+        .info-label {
+            font-size: 0.85rem;
+            color: #a0a0ff;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #00ff9d;
+        }
+        
+        .current-player {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .player-indicator {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .player-indicator.black {
+            background: radial-gradient(circle at 30% 30%, #333, #000);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .player-indicator.white {
+            background: radial-gradient(circle at 30% 30%, #fff, #ccc);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        
+        .player-indicator.active {
+            border-color: #00ff9d;
+            box-shadow: 0 0 15px #00ff9d;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .game-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .board-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            background: #deb887;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+        
+        .board-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            grid-template-rows: repeat(15, 1fr);
+            gap: 0;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            margin: 0 auto;
+            position: relative;
+            background: transparent;
+        }
+        
+        .board-cell {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .board-cell::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-right: 1px solid #8b4513;
+            border-bottom: 1px solid #8b4513;
+            box-sizing: border-box;
+        }
+        
+        .board-cell:last-child::before {
+            border-right: none;
+        }
+        
+        .board-cell:nth-child(15n)::before {
+            border-right: none;
+        }
+        
+        .board-cell:nth-child(n+211)::before {
+            border-bottom: none;
+        }
+        
+        .stone {
+            width: 85%;
+            height: 85%;
+            border-radius: 50%;
+            position: relative;
+            z-index: 2;
+            box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.3),
+                        0 3px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stone.black {
+            background: radial-gradient(circle at 30% 30%, #555, #000);
+            border: 1px solid #222;
+        }
+        
+        .stone.white {
+            background: radial-gradient(circle at 30% 30%, #fff, #aaa);
+            border: 1px solid #ddd;
+        }
+        
+        .stone.last-move {
+            box-shadow: 0 0 0 3px #ff4081,
+                        inset 0 -3px 5px rgba(0, 0, 0, 0.3),
+                        0 3px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .control-btn {
+            padding: 14px 25px;
+            background: linear-gradient(145deg, #2196f3, #0d47a1);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            min-width: 140px;
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+            touch-action: manipulation;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.6);
+        }
+        
+        .control-btn:active {
+            transform: translateY(0);
+        }
+        
+        .control-btn.restart {
+            background: linear-gradient(145deg, #ff4081, #d5006d);
+            box-shadow: 0 5px 15px rgba(255, 64, 129, 0.4);
+        }
+        
+        .control-btn.restart:hover {
+            box-shadow: 0 8px 20px rgba(255, 64, 129, 0.6);
+        }
+        
+        .control-btn.undo {
+            background: linear-gradient(145deg, #00c853, #009624);
+            box-shadow: 0 5px 15px rgba(0, 200, 83, 0.4);
+        }
+        
+        .control-btn.undo:hover {
+            box-shadow: 0 8px 20px rgba(0, 200, 83, 0.6);
+        }
+        
+        .game-status {
+            margin-top: 15px;
+            font-size: 1.3rem;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .game-status.win {
+            color: #00ff9d;
+            animation: pulse 1.5s infinite;
+            background: rgba(0, 255, 157, 0.1);
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .instructions h3 {
+            color: #00dbde;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+        
+        @keyframes stoneAppear {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+        
+        .stone.new {
+            animation: stoneAppear 0.3s ease;
+        }
+        
+        @keyframes winLine {
+            0% { stroke-dashoffset: 100; }
+            100% { stroke-dashoffset: 0; }
+        }
+        
+        .win-line {
+            stroke: #ff4081;
+            stroke-width: 3;
+            stroke-dasharray: 10;
+            animation: winLine 2s linear infinite;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .info-value {
+                font-size: 1.5rem;
+            }
+            
+            .control-btn {
+                min-width: 120px;
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .board-container {
+                padding: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .game-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .control-btn {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .board-container {
+                padding: 8px;
+            }
+            
+            .stone {
+                width: 80%;
+                height: 80%;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            h1 {
+                font-size: 1.4rem;
+            }
+            
+            .info-value {
+                font-size: 1.3rem;
+            }
+            
+            .game-status {
+                font-size: 1.1rem;
+            }
+        }
+        
+        /* 防止双击缩放 */
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* 优化触摸反馈 */
+        .board-cell:active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>手机五子棋</h1>
+            <p class="subtitle">黑白对战，先连五子者胜</p>
+        </header>
+        
+        <div class="game-info">
+            <div class="info-box">
+                <div class="info-label">步数</div>
+                <div class="info-value" id="moves">0</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">当前玩家</div>
+                <div class="current-player">
+                    <div class="player-indicator black active" id="black-indicator"></div>
+                    <div class="player-indicator white" id="white-indicator"></div>
+                </div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">棋盘</div>
+                <div class="info-value">15×15</div>
+            </div>
+        </div>
+        
+        <div class="game-container">
+            <div class="board-container">
+                <div id="game-board"></div>
+                <svg id="win-line" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></svg>
+            </div>
+            
+            <div class="game-status" id="game-status">黑方先行，点击棋盘落子</div>
+            
+            <div class="controls">
+                <button class="control-btn restart" id="restart-btn">重新开始</button>
+                <button class="control-btn undo" id="undo-btn">悔棋</button>
+                <button class="control-btn" id="hint-btn">提示</button>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>游戏规则</h3>
+            <ul>
+                <li>黑方先行，双方轮流在棋盘交叉点上落子</li>
+                <li>先在横、竖、斜任意方向连成五子者获胜</li>
+                <li>棋盘大小为15×15，标准五子棋规格</li>
+                <li>使用"悔棋"按钮可以撤销上一步操作</li>
+                <li>使用"提示"按钮可以显示建议落子位置</li>
+                <li>游戏支持触摸操作，适配手机屏幕</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 游戏常量
+        const BOARD_SIZE = 15;
+        const EMPTY = 0;
+        const BLACK = 1;
+        const WHITE = 2;
+        
+        // 游戏状态变量
+        let board = [];
+        let currentPlayer = BLACK;
+        let moves = 0;
+        let gameOver = false;
+        let moveHistory = [];
+        let lastMove = null;
+        
+        // DOM元素
+        const gameBoard = document.getElementById('game-board');
+        const movesElement = document.getElementById('moves');
+        const gameStatusElement = document.getElementById('game-status');
+        const blackIndicator = document.getElementById('black-indicator');
+        const whiteIndicator = document.getElementById('white-indicator');
+        const restartBtn = document.getElementById('restart-btn');
+        const undoBtn = document.getElementById('undo-btn');
+        const hintBtn = document.getElementById('hint-btn');
+        const winLineSvg = document.getElementById('win-line');
+        
+        // 方向向量：横、竖、斜（左上到右下）、斜（右上到左下）
+        const DIRECTIONS = [
+            [0, 1],   // 水平 →
+            [1, 0],   // 垂直 ↓
+            [1, 1],   // 斜向 ↘
+            [1, -1]   // 斜向 ↙
+        ];
+        
+        // 初始化游戏
+        function initGame() {
+            // 初始化棋盘
+            board = [];
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                board[i] = [];
+                for (let j = 0; j < BOARD_SIZE; j++) {
+                    board[i][j] = EMPTY;
+                }
+            }
+            
+            // 重置游戏状态
+            currentPlayer = BLACK;
+            moves = 0;
+            gameOver = false;
+            moveHistory = [];
+            lastMove = null;
+            
+            // 更新UI
+            updateMovesDisplay();
+            updatePlayerIndicator();
+            updateGameStatus("黑方先行，点击棋盘落子");
+            clearWinLine();
+            
+            // 渲染棋盘
+            renderBoard();
+        }
+        
+        // 渲染棋盘
+        function renderBoard() {
+            gameBoard.innerHTML = '';
+            winLineSvg.innerHTML = '';
+            
+            // 创建棋盘格子
+            for (let row = 0; row < BOARD_SIZE; row++) {
+                for (let col = 0; col < BOARD_SIZE; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'board-cell';
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    
+                    // 添加点击事件
+                    cell.addEventListener('click', () => handleCellClick(row, col));

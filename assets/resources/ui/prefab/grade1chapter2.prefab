@@ -6148,7 +6148,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 29.19921875,
+      "width": 16.650390625,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -6184,7 +6184,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "+",
+    "_string": "-",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 50,
@@ -7896,7 +7896,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 900,
-      "height": 90.39999999999999
+      "height": 50.4
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -7931,7 +7931,7 @@
       "b": 174,
       "a": 255
     },
-    "_string": "看大数，分小数\n凑成10，加剩数",
+    "_string": "拆大数，减小数，加剩数",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_actualFontSize": 32,
