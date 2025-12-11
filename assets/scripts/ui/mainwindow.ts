@@ -32,7 +32,9 @@ export default class mainwindow extends auto_mainwindow {
                 uiController.getInstance().show("grade1chapter5");
             });
         }
-
+        util.bindClickEventFX(this.btnChapter6.node, () => {
+            uiController.getInstance().show("grade1chapter6");
+        });
     }
     init() {//每次打开都会执行，初始化函数
         // uiController.getInstance().show("grade1chapter2");

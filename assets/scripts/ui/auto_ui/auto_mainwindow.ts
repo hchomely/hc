@@ -19,5 +19,7 @@ export default class auto_mainwindow extends uiBaseEX {
     btnChapter4: Button = null;
     @property(Button)
     btnChapter5: Button = null;
+    @property(Button)
+    btnChapter6: Button = null;
 
 }

@@ -20,8 +20,7 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
         this.widgetPlayer.node.setParent(this.node);
         this.widgetPlayer.node.active = false;
         this.tgTips.node.on("toggle", (tg) => {
-            this.showTips = tg.isChecked;
-            this.showTips ? this.slTips.string = this.data.tips : this.slTips.string = "点击提示查看知识点";
+            this.freshTips();
         });
     }
     init() {//每次打开都会执行，初始化函数
@@ -38,12 +37,7 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
     step: number = 0; // 当前步骤
     showTips: boolean = false;
     refreshUI() {//刷新函数，页面某些数据需要刷新的时候使用
-        if (this.showTips) {
-            this.slTips.string = this.data.tips;
-        }
-        else {
-            this.slTips.string = "点击提示查看知识点";
-        }
+        this.freshTips();
         this.slTipsToEditor.string = this.data.question;
         this.customStep1.active = this.step >= 2;
         this.slResult.node.active = this.step == 3;
@@ -280,6 +274,9 @@ export default class grade1chapter5 extends auto_grade1chapter5 {
                 .to(animTime, { opacity: 255 })
                 .start();
         }
+    }
+    freshTips() {
+        this.tgTips.isChecked ? this.slTips.string = this.data.tips : this.slTips.string = "点击提示查看知识点";
     }
     doTween(child, animTime, childPosX, childPosY, animDelay) {
         child.setScale(new Vec3(0, 0, 0));
