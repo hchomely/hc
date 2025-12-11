@@ -30,8 +30,7 @@ export default class grade1chapter6 extends auto_grade1chapter6 {
     }
     refreshUI() {//刷新函数，页面某些数据需要刷新的时候使用
         this.freshTips();
-        console.error("this.data", this.data);
-        this.slTipsToEditor.string = this.data.question;
+        this.slTipsToEditor.string =   this.tgShowSec.isChecked?this.data.question1:this.data.question;
 
         this.custom_hour.eulerAngles = new Vec3(0, 0, -this.data.hourAngle);
         this.custom_min.eulerAngles = new Vec3(0, 0, -this.data.minuteAngle);
@@ -94,7 +93,8 @@ export default class grade1chapter6 extends auto_grade1chapter6 {
 
         
         return {
-            question: `写出下面`,
+            question: `写出下图的小时分钟`,
+            question1: `写出下图的小时分钟秒钟`,
             tips: `时针每小时走30度，每分走0.5度，分针每分钟走6度，秒针每秒走6度`,
             answer: `时间${hour}:${minute}`,
             answer1: `时间${hour}:${minute}:${second}`,
